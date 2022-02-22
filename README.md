@@ -14,7 +14,7 @@ local home = os.getenv("HOME")
 local xpm_path = '.local/share/xplr/xpm.xplr/'
 local xpm_url = 'https://github.com/dtomvan/xpm.xplr'
 package.path = package.path .. ';' .. home .. "/" .. xpm_path .. '/?/init.lua;'
-os.execute(string.format('ls ~/%s >/dev/null || git clone ~/%s ~/%s', xpm_path, xpm_url, xpm_path))
+os.execute(string.format('ls ~/%s >/dev/null || git clone %s ~/%s', xpm_path, xpm_url, xpm_path))
 ```
 
 - Require the module in `~/.config/xplr/init.lua`
