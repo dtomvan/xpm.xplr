@@ -1,52 +1,60 @@
-# xplr plugin template
-
-Use this template to [write your own xplr plugin](https://arijitbasu.in/xplr/en/writing-plugins.html).
-
-> **NOTE:** The `src` directory is a symlink to `.` for compatibility reasons.
-> It may be removed in the future.
+# xplr plugin manager
 
 ## Requirements
 
-- Some tool
+- Bash
+- Git
 
 ## Installation
 
-### Install manually
-
 - Add the following line in `~/.config/xplr/init.lua`
 
-  ```lua
-  local home = os.getenv("HOME")
-  package.path = home
-    .. "/.config/xplr/plugins/?/src/init.lua;"
-    .. home
-    .. "/.config/xplr/plugins/?.lua;"
-    .. package.path
-  ```
-
-- Clone the plugin
-
-  ```bash
-  mkdir -p ~/.config/xplr/plugins
-
-  git clone https://github.com/{username}/{plugin}.xplr ~/.config/xplr/plugins/{plugin}
-  ```
+```lua
+local home = os.getenv("HOME")
+local xpm_path = '.local/share/xplr/xpm.xplr/'
+local xpm_url = 'https://github.com/dtomvan/xpm.xplr'
+package.path = package.path .. ';' .. home .. "/" .. xpm_path .. '/?/init.lua;'
+os.execute(string.format('ls ~/%s >/dev/null || git clone ~/%s ~/%s', xpm_path, xpm_url, xpm_path))
+```
 
 - Require the module in `~/.config/xplr/init.lua`
 
-  ```lua
-  require("{plugin}").setup()
+```lua
+require("xpm").setup({
+    -- This works
+    'sayanarijit/command-mode.xplr',
+    -- Or this
+    'github:sayanarijit/command-mode.xplr',
+    -- Or this
+    'https://github.com/sayanarijit/command-mode.xplr',
+})
+```
+WARNING: a current limitation is that any repo not ending in .xplr isn't picked
+up correctly, but by convention the repo's name should end in .xplr
 
-  -- Or
-
-  require("{plugin}").setup{
-    mode = "action",
-    key = ":",
-  }
-
-  -- Type `::` and enjoy.
-  ```
 
 ## Features
+- Automatically downloads and installs plugins
+- Pre/post load hooks
+- Automatically calls `setup()` if possible
+- Grabs from any git repository
 
-- Some cool feature
+## Config variables
+All available config variables for a plugin are:
+```lua
+-- <in xpm.setup>
+{
+    -- Default: Skip if empty
+    "<name>",
+    -- Default: empty
+    after = function() end,
+    -- Default: empty
+    before = function() end,
+    -- Default: require("<name>").setup()
+    setup = function() end,
+    -- Default: empty
+    -- WARNING: if any of the dependencies fail to download, the plugin won't
+    -- load to prevent from any damage being done
+    deps = { "sayanarijit/command-mode.xplr" }
+}
+```
