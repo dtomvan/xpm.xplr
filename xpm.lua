@@ -1,13 +1,12 @@
 ---@diagnostic disable
 local xplr = xplr
+_xpm_plugins = {}
 ---@diagnostic enable
 
 local M = {}
 
 local lib = require 'xpm.lib'
 local util = require 'xpm.lib.util'
-
-M._plugins = {}
 
 local function download_and_install(plugin)
     local name = plugin[1]
@@ -50,8 +49,11 @@ local function download_and_install(plugin)
             after()
         end
         local sanitized = util.sanitize_plugin_name(name);
+        if type(plugin) == "string" then
+            plugin = { plugin }
+        end
         plugin._path = util.plugin_path(sanitized);
-        table.insert(M._plugins, plugin)
+        table.insert(_xpm_plugins, plugin)
         return true
     end
 end

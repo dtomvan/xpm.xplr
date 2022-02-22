@@ -1,7 +1,5 @@
 local M = {}
 
-local xpm = require 'xpm'
-
 M.data_path = os.getenv 'XDG_DATA_HOME' or os.getenv 'HOME' .. '/.local/share'
 M.install_path = M.data_path .. '/xplr/'
 
@@ -47,7 +45,7 @@ function M.removable_plugins()
     local existing = M.repos()
     local removable = {}
     for _, plugin in ipairs(existing) do
-        for _, needed_plugin in ipairs(xpm._plugins) do
+        for _, needed_plugin in ipairs(_xpm_plugins) do
             if plugin == needed_plugin._path then
                 goto skip
             end
