@@ -9,7 +9,7 @@ local lib = require 'xpm.lib'
 local util = require 'xpm.lib.util'
 
 function M.use_plugin(plugin)
-    local name = plugin[1]
+    local name = plugin.name or plugin[1]
     if type(plugin) == 'string' then
         name = plugin
     end

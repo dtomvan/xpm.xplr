@@ -36,6 +36,8 @@ require("xpm").setup({
     'github:sayanarijit/command-mode.xplr',
     -- Or this
     'https://github.com/sayanarijit/command-mode.xplr',
+    -- You can also use a field
+    name = "sayanarijit/command-mode.xplr",
 })
 ```
 WARNING: a current limitation is that any repo not ending in .xplr isn't picked
@@ -55,6 +57,8 @@ All available config variables for a plugin are:
 {
     -- Default: Skip if empty
     "<name>",
+    -- Default: Skip if empty
+    name = "<name>",
     -- Default: empty
     after = function() end,
     -- Default: empty
