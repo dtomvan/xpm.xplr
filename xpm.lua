@@ -8,7 +8,7 @@ local M = {}
 local lib = require 'xpm.lib'
 local util = require 'xpm.lib.util'
 
-local function download_and_install(plugin)
+function M.use_plugin(plugin)
     local name = plugin[1]
     if type(plugin) == 'string' then
         name = plugin
@@ -25,7 +25,7 @@ local function download_and_install(plugin)
     local deps = plugin.deps
     if type(deps) == 'table' then
         for _, dep in ipairs(deps) do
-            local status = download_and_install(dep)
+            local status = M.use_plugin(dep)
             if not status then
                 return false
             end
@@ -61,7 +61,7 @@ end
 function M.setup(args)
     args = args or {}
     for _, plugin in ipairs(args) do
-        download_and_install(plugin)
+        M.use_plugin(plugin)
     end
 end
 
