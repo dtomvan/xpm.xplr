@@ -84,7 +84,7 @@ function M.plug_modname(plugin)
 end
 
 function M.git_clone(url, target)
-    local cmd = string.format('git clone %s %s', url, target)
+    local cmd = string.format("git clone '%s' '%s'", url, target)
     return M.cmd(cmd)
 end
 
