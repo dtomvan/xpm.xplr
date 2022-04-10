@@ -11,7 +11,7 @@
 
 ```lua
 local home = os.getenv("HOME")
-local xpm_path = home .. ".local/share/xplr/xpm.xplr"
+local xpm_path = home .. "/.local/share/xplr/xpm.xplr"
 local xpm_url = "https://github.com/dtomvan/xpm.xplr"
 
 package.path = package.path
