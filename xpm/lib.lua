@@ -15,7 +15,7 @@ function M.dump(o)
     end
 end
 
-local util = require 'xpm.lib.util'
+local util = require('xpm.lib.util')
 M._authors = {}
 
 function M.add_plugin(plugin)
@@ -46,7 +46,7 @@ function M.add_plugin(plugin)
 
         if not output then
             return false, 'Got empty output from git'
-        elseif output:gmatch '^fatal:' or output:gmatch '^error:' then
+        elseif output:gmatch('^fatal:') or output:gmatch('^error:') then
             return false, output
         else
             return true, 'Successfully installed ' .. name
@@ -56,7 +56,7 @@ function M.add_plugin(plugin)
 end
 
 function M.remove_plugin(plugin)
-    return util.cmd("rm -rf " .. plugin)
+    return util.cmd(string.format("rm -rf '{}'", plugin))
 end
 
 function M.remove_unneeded()
