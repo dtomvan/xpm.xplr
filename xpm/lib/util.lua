@@ -1,91 +1,115 @@
 local M = {}
 
-M.data_path = os.getenv 'XDG_DATA_HOME' or os.getenv 'HOME' .. '/.local/share'
-M.install_path = M.data_path .. '/xplr/'
+M.data_path = os.getenv("XDG_DATA_HOME") or os.getenv("HOME") .. "/.local/share"
+M.install_path = M.data_path .. "/xplr"
+
+function M.dump(o)
+  if type(o) == "table" then
+    local s = "{ "
+    for k, v in pairs(o) do
+      if type(k) ~= "number" then
+        k = '"' .. k .. '"'
+      end
+      s = s .. "[" .. k .. "] = " .. M.dump(v) .. ","
+    end
+    return s .. "} "
+  else
+    return tostring(o)
+  end
+end
 
 function M.subst_home(path)
-    local home = os.getenv 'HOME'
-    return string.gsub(path, '~', home)
+  local home = os.getenv("HOME")
+  return string.gsub(path, "~", home)
 end
+
 function M.plugin_path(plugin)
-    return M.install_path .. '/' .. plugin .. '/'
+  return M.install_path .. "/" .. plugin
 end
 
 function M.path_exists(file)
-    local ok, err, code = os.rename(file, file)
-    if not ok then
-        if code == 13 then
-            -- Permission denied, but it exists
-            return true
-        end
+  local ok, err, code = os.rename(file, file)
+  if not ok then
+    if code == 13 then
+      -- Permission denied, but it exists
+      return true
     end
-    return ok, err
+  end
+  return ok, err
 end
 
 function M.cmd(cmd)
-    local handle = io.popen(cmd, 'r')
-    local s = handle:read '*a'
-    return s or ''
+  cmd = cmd .. " 2>&1 "
+  local handle = assert(io.popen(cmd, "r"))
+  handle:flush()
+  local s = handle:read("*all")
+  handle:close()
+  return s or ""
 end
 
 function M.lines(str)
-    local lines = {}
-    for s in str:gmatch '[^\r\n]+' do
-        table.insert(lines, s)
-    end
-    return lines
+  local lines = {}
+  for s in str:gmatch("[^\r\n]+") do
+    table.insert(lines, s)
+  end
+  return lines
 end
 
 function M.repos()
-    local existing = M.cmd 'find ' .. M.install_path .. " -name .git -type d -prune | sed 's/\\/\\.git$//'"
-    return M.lines(existing)
-end
+  local cmd = string.format(
+    "find '%s' -type d -name .git -prune | sed 's:/.git$::'",
+    M.install_path
+  )
 
-function M.removable_plugins()
-    local existing = M.repos()
-    local removable = {}
-    for _, plugin in ipairs(existing) do
-        for _, needed_plugin in ipairs(_xpm_plugins) do
-            if plugin == needed_plugin._path then
-                goto skip
-            end
-        end
-        table.insert(removable, plugin)
-        ::skip::
-    end
-    return removable
+  local existing = M.cmd(cmd)
+
+  return M.lines(existing)
 end
 
 function M.parse_url(url)
-    url = string.gsub(url, '^github:', 'https://github.com/')
-    url = string.gsub(url, '^gitlab:', 'https://gitlab.com/')
-    if not string.find(url, 'https://') then
-        url = 'https://github.com/' .. url
-    end
-    if not string.find(url, '.git$') then
-        url = url .. '.git'
-    end
-    return url
+  url = string.gsub(url, "^github:", "https://github.com/")
+  url = string.gsub(url, "^gitlab:", "https://gitlab.com/")
+  if not string.find(url, "https://") then
+    url = "https://github.com/" .. url
+  end
+  if not string.find(url, ".git$") then
+    url = url .. ".git"
+  end
+  return url
 end
 
 function M.sanitize_plugin_name(name)
-    name = name:gsub('https://', '')
-    name = name:gsub('http://', '')
-    return name
+  name = name:gsub("https://", "")
+  name = name:gsub("http://", "")
+  return name
 end
 
 function M.author_name(name)
-    name = string.match(name, '([A-Za-z0-9%-]+)/')
-    return name
+  name = string.match(name, "([A-Za-z0-9%-]+)/")
+  return name
 end
 
 function M.plug_modname(plugin)
-    return plugin:gsub('.+/([A-Za-z0-9%-]+).xplr', '%1')
+  return plugin:gsub(".+/([A-Za-z0-9%-]+).xplr", "%1")
 end
 
 function M.git_clone(url, target)
-    local cmd = string.format("git clone '%s' '%s'", url, target)
-    return M.cmd(cmd)
+  local cmd = string.format("git clone '%s' '%s'", url, target)
+  return M.cmd(cmd)
+end
+
+function M.git_fetch(path)
+  local cmd = string.format("cd '%s' && git fetch", path)
+  return M.cmd(cmd)
+end
+
+function M.git_reset(path, rev)
+  local cmd = string.format("cd '%s' && git reset --hard '%s'", path, rev)
+  return M.cmd(cmd)
+end
+
+function M.is_err(output)
+  return output:find("^fatal:") ~= nil or output:find("^error:") ~= nil
 end
 
 return M
