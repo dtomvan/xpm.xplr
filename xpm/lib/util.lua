@@ -103,8 +103,8 @@ function M.git_fetch(path)
   return M.cmd(cmd)
 end
 
-function M.git_reset(path, rev)
-  local cmd = string.format("cd '%s' && git reset --hard '%s'", path, rev)
+function M.git_checkout(path, rev)
+  local cmd = string.format("cd '%s' && git checkout '%s'", path, rev)
   return M.cmd(cmd)
 end
 
