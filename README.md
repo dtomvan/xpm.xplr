@@ -11,7 +11,7 @@
 
 ```lua
 local home = os.getenv("HOME")
-local xpm_path = home .. "/.local/share/xplr/xpm.xplr"
+local xpm_path = home .. "/.local/share/xplr/dtomvan/xpm.xplr"
 local xpm_url = "https://github.com/dtomvan/xpm.xplr"
 
 package.path = package.path
@@ -38,23 +38,24 @@ os.execute(
 require("xpm").setup({
 
     -- This works
-    'sayanarijit/command-mode.xplr',
+    'dtomvan/xpm.xplr',
 
     -- Or this
-    'github:sayanarijit/command-mode.xplr',
+    'github:dtomvan/xpm.xplr',
 
     -- Or this
-    'https://github.com/sayanarijit/command-mode.xplr',
+    'https://github.com/dtomvan/xpm.xplr',
 
     -- You can also use a field
-    { name = "sayanarijit/command-mode.xplr" },
+    { name = "dtomvan/xpm.xplr" },
 })
 
 -- Or
 
 require("xpm").setup({
   plugins = {
-    'sayanarijit/command-mode.xplr',
+    -- Let xpm manage itself
+    'dtomvan/xpm.xplr',
     { name = 'sayanarijit/fzf.xplr' },
   },
   auto_install = true,
@@ -89,7 +90,7 @@ up correctly, but by convention the repo's name should end in .xplr
 ```lua
 {
   -- Default: {}
-  plugins = { "sayanarijit/fzf.xplr" },
+  plugins = { "dtomvan/xpm.xplr" },
 
   -- Default: true
   auto_install = true
@@ -127,6 +128,6 @@ All available arguments for a plugin are:
     -- Default: empty
     -- WARNING: if any of the dependencies fail to download, the plugin won't
     -- load to prevent from any damage being done
-    deps = { "sayanarijit/command-mode.xplr" }
+    deps = { "dtomvan/xpm.xplr" }
 }
 ```

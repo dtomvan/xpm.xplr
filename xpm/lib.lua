@@ -94,7 +94,7 @@ function M.add_plugin(plugin, rev)
     local output = util.git_clone(url, path)
 
     if not util.is_err(output) then
-      output = util.git_reset(path, rev)
+      output = util.git_checkout(path, rev)
     end
 
     if not output then
@@ -133,7 +133,7 @@ function M.remove_plugin(plugin)
 
   local path = plugin._path
 
-  assert(path ~= nil and path:gmatch(util.install_path))
+  assert(path ~= nil and path:find(util.install_path) ~= nil)
 
   print(string.format("xpm remove: '%s'", path))
   io.write("[press ENTER to delete]")
@@ -149,7 +149,7 @@ function M.update_plugins()
     print(string.format("xpm update: '%s'", plugin._path))
     local rev = plugin.rev or "origin"
     util.git_fetch(plugin._path)
-    util.git_reset(plugin._path, rev)
+    util.git_checkout(plugin._path, rev)
   end
 end
 
