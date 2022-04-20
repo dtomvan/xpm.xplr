@@ -81,6 +81,7 @@ function M.add_plugin(plugin, rev)
       .. author
       .. "/?.xplr/init.lua;"
       .. util.install_path
+      .. "/"
       .. author
       .. "/?.xplr/src/init.lua;"
 
