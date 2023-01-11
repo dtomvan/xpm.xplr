@@ -1,3 +1,5 @@
+local q = xplr.util.shell_quote
+
 local M = {}
 
 local util = require("xpm.lib.util")
@@ -91,7 +93,7 @@ function M.add_plugin(plugin, rev)
   if not util.path_exists(path) then
     -- Install plugin
     local url = util.parse_url(plugin)
-    print(string.format("xpm install: %s -> %s", url, path))
+    print(string.format("xpm install: %s -> %s", q(url), q(path)))
     local output = util.git_clone(url, path)
 
     if not util.is_err(output) then
@@ -136,18 +138,18 @@ function M.remove_plugin(plugin)
 
   assert(path ~= nil and path:find(util.install_path) ~= nil)
 
-  print(string.format("xpm remove: '%s'", path))
+  print(string.format("xpm remove: %s", q(path)))
   io.write("[press ENTER to delete]")
   io.flush()
   local _ = io.read()
   print()
 
-  return util.cmd(string.format("rm -rf '%s'", path))
+  return xplr.util.shell_execute("rm", { "-rf", path })
 end
 
 function M.update_plugins()
   for _, plugin in pairs(M._xpm_plugins) do
-    print(string.format("xpm update: '%s'", plugin._path))
+    print(string.format("xpm update: %s", q(plugin._path)))
     local rev = plugin.rev or "origin"
     util.git_fetch(plugin._path)
     util.git_checkout(plugin._path, rev)
