@@ -1,5 +1,7 @@
 # xplr plugin manager
 
+NOTE: as of `a194ce5` the minimum xplr version is `0.20` due to the usage of `xplr.util`
+
 ## Requirements
 
 - Bash
