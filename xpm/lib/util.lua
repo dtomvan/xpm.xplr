@@ -1,3 +1,5 @@
+local q = xplr.util.shell_quote
+
 local M = {}
 
 M.data_path = os.getenv("XDG_DATA_HOME") or os.getenv("HOME") .. "/.local/share"
@@ -39,12 +41,8 @@ function M.path_exists(file)
 end
 
 function M.cmd(cmd)
-  cmd = cmd .. " 2>&1 "
-  local handle = assert(io.popen(cmd, "r"))
-  handle:flush()
-  local s = handle:read("*all")
-  handle:close()
-  return s or ""
+  res = xplr.util.shell_execute("bash", { "-c", cmd })
+  return res.stdout .. "\n" .. res.stderr
 end
 
 function M.lines(str)
@@ -57,8 +55,8 @@ end
 
 function M.repos()
   local cmd = string.format(
-    "find '%s' -type d -name .git -prune | sed 's:/.git$::'",
-    M.install_path
+    "find %s -type d -name .git -prune | sed 's:/.git$::'",
+    q(M.install_path)
   )
 
   local existing = M.cmd(cmd)
@@ -94,17 +92,17 @@ function M.plug_modname(plugin)
 end
 
 function M.git_clone(url, target)
-  local cmd = string.format("git clone '%s' '%s'", url, target)
+  local cmd = string.format("git clone %s %s", q(url), q(target))
   return M.cmd(cmd)
 end
 
 function M.git_fetch(path)
-  local cmd = string.format("cd '%s' && git fetch", path)
+  local cmd = string.format("cd %s && git fetch", q(path))
   return M.cmd(cmd)
 end
 
 function M.git_checkout(path, rev)
-  local cmd = string.format("cd '%s' && git checkout '%s'", path, rev)
+  local cmd = string.format("cd %s && git checkout %s", q(path), q(rev))
   return M.cmd(cmd)
 end
 
