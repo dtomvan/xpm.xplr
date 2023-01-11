@@ -2,6 +2,22 @@
 local xplr = xplr
 ---@diagnostic enable
 
+local function incompatible(condition, version)
+  assert(
+    condition,
+    'Incompatible version `' .. (version or 'null') .. '` please upgrade xplr and your config to v0.20.0 or higher.'
+  )
+end
+
+incompatible(xplr.util, _G.version)
+incompatible(xplr.util.version, _G.version)
+
+local version = xplr.util.version()
+incompatible(
+  not (version.major == 0 and version.minor < 20),
+  string.format('%s.%s.%s', version.minor, version.major, version.patch)
+)
+
 local M = {}
 
 local lib = require("xpm.lib")
