@@ -20,7 +20,7 @@ incompatible(
 
 local M = {}
 
-local lib = require("xpm.lib")
+local lib = require 'xpm.lib'
 
 function M.setup(args)
   args = args or {}
@@ -52,16 +52,16 @@ function M.setup(args)
     remove_plugins = M.remove_plugins,
 
     render_plugins = function(_)
-      local ui = { " " }
+      local ui = { ' ' }
       for name, plugin in pairs(lib._xpm_plugins) do
-        table.insert(ui, string.format("%s (%s)", name, plugin.rev or "origin"))
+        table.insert(ui, string.format('%s (%s)', name, plugin.rev or 'origin'))
       end
       return ui
     end,
   }
 
   xplr.config.modes.custom.xpm = {
-    name = "xpm",
+    name = 'xpm',
 
     layout = {
       Horizontal = {
@@ -74,13 +74,13 @@ function M.setup(args)
         splits = {
           {
             CustomContent = {
-              title = "plugins",
+              title = 'plugins',
               body = {
-                DynamicList = { render = "custom.xpm.render_plugins" },
+                DynamicList = { render = 'custom.xpm.render_plugins' },
               },
             },
           },
-          "HelpMenu",
+          'HelpMenu',
         },
       },
     },
@@ -88,37 +88,37 @@ function M.setup(args)
     key_bindings = {
       on_key = {
         i = {
-          help = "install plugins",
+          help = 'install plugins',
           messages = {
-            { CallLua = "custom.xpm.install_plugins" },
+            { CallLua = 'custom.xpm.install_plugins' },
           },
         },
         c = {
-          help = "cleanup plugins",
+          help = 'cleanup plugins',
           messages = {
-            { CallLua = "custom.xpm.cleanup_plugins" },
+            { CallLua = 'custom.xpm.cleanup_plugins' },
           },
         },
         u = {
-          help = "update plugins",
+          help = 'update plugins',
           messages = {
-            { CallLua = "custom.xpm.update_plugins" },
+            { CallLua = 'custom.xpm.update_plugins' },
           },
         },
         r = {
-          help = "remove plugins",
+          help = 'remove plugins',
           messages = {
-            { CallLua = "custom.xpm.remove_plugins" },
+            { CallLua = 'custom.xpm.remove_plugins' },
           },
         },
         esc = {
           messages = {
-            "PopMode",
+            'PopMode',
           },
         },
-        ["ctrl-c"] = {
+        ['ctrl-c'] = {
           messages = {
-            "Terminate",
+            'Terminate',
           },
         },
       },
