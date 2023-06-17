@@ -83,7 +83,7 @@ function M.sanitize_plugin_name(name)
 end
 
 function M.author_name(name)
-  name = string.match(name, "([A-Za-z0-9%-]+)/")
+  name = string.match(name, "([A-Za-z0-9%-:]+)/")
   return name
 end
 
